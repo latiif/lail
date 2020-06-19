@@ -1,0 +1,3 @@
+import "./test/fact.code"
+
+let xxx = fact(4);
