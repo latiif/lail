@@ -173,24 +173,32 @@ func (p *Parser) parseIfExpression() ast.Expression {
 }
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
-	if !p.expectPeek(token.Lbrace) {
-		return nil
-	}
 
-	block := &ast.BlockStatement{
-		Token: p.currToken,
-	}
+	var block *ast.BlockStatement
 
-	p.nextToken()
-
-	block.Statements = []ast.Statement{}
-
-	for !p.currTokenIs(token.Rbrace) && !p.currTokenIs(token.EOF) {
+	// multi-statement block
+	if p.peekTokenIs(token.Lbrace) {
+		p.nextToken()
+		block = &ast.BlockStatement{
+			Token: p.currToken,
+		}
+		p.nextToken()
+		block.Statements = []ast.Statement{}
+		for !p.currTokenIs(token.Rbrace) && !p.currTokenIs(token.EOF) {
+			stmt := p.parseStatement()
+			if stmt != nil {
+				block.Statements = append(block.Statements, stmt)
+			}
+			p.nextToken()
+		}
+	} else {
+		block = &ast.BlockStatement{}
+		p.nextToken()
+		block.Statements = []ast.Statement{}
 		stmt := p.parseStatement()
 		if stmt != nil {
 			block.Statements = append(block.Statements, stmt)
 		}
-		p.nextToken()
 	}
 	return block
 }
