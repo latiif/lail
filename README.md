@@ -15,3 +15,20 @@ Lail is still in its early stages, and I am yet to decide on a use-case for it, 
 ## Language Specification
 
 As Lail is still under development, the language specification _can_ change.
+
+### Program
+
+A Lail program is zero or more statements and expressions. A program's result is it's last expression. Statements are separated by `;`.
+
+```
+let lang = "fr";
+let greeting = if (lang == "en") {
+    "Hello"
+} else if (lang == "fr") {
+    "Salut"
+} else {
+    "Im speechless"
+}
+
+greeting + " Lail";
+```
