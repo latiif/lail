@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 				if err != nil {
 					continue
 				}
-				repl.InterpretFile(fileHandle, os.Stdout)
+				repl.InterpretFile(fileHandle, os.Stdout, os.Stderr)
 				fileHandle.Close()
 			}
 		}

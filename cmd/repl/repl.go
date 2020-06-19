@@ -45,7 +45,7 @@ func printParserErrors(out io.Writer, errors []string) {
 	}
 }
 
-func InterpretFile(in io.Reader, out io.Writer) {
+func InterpretFile(in io.Reader, out io.Writer, err io.Writer) {
 	scanner := bufio.NewScanner(in)
 	var b bytes.Buffer
 	for scanner.Scan() {
@@ -59,7 +59,7 @@ func InterpretFile(in io.Reader, out io.Writer) {
 
 	prog := p.ParseProgram()
 	if len(p.Errors()) != 0 {
-		printParserErrors(out, p.Errors())
+		printParserErrors(err, p.Errors())
 		return
 	}
 
