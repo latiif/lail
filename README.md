@@ -32,3 +32,23 @@ let greeting = if (lang == "en") {
 
 greeting + " Lail";
 ```
+
+Lail treats functions as first-class citizens.
+
+```
+let fact = fn(x) if (x>1) x*fact(x-1) else 1;
+
+let factorial = fn(x) {
+    if (x>1) {
+        return x*fact(x-1);
+    } else {
+        return 1;
+    }
+}
+
+fact(5) == factorial(5);
+```
+
+Both `fact` and `factorial` are valid.
+
+In `fact` we see that `if-else` are expressions and that `{` and `}` are optional for one-statement blocks.
