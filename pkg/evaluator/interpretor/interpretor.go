@@ -49,7 +49,7 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 	case *ast.Boolean:
 		return getBooleanObject(node.Value)
 	case *ast.IfExpression:
-		if parseAsBoolean(Eval(node.Condition, env)) {
+		if evalAsBoolean(Eval(node.Condition, env)) {
 			return Eval(node.Consequence, env)
 		}
 		if node.Alternative != nil {
@@ -164,8 +164,8 @@ func evalInfixExpression(lOperand object.Object, operator string, rOperand objec
 		return newIncompatibleTypes(operator, lOperand, rOperand)
 	}
 
-	lValue := parseAsInteger(lOperand)
-	rValue := parseAsInteger(rOperand)
+	lValue := evalAsInteger(lOperand)
+	rValue := evalAsInteger(rOperand)
 
 	switch operator {
 	case "+":
@@ -189,30 +189,16 @@ func evalInfixExpression(lOperand object.Object, operator string, rOperand objec
 	case "<=":
 		return getBooleanObject(lValue <= rValue)
 	case "!=":
-		return getBooleanObject(lValue != rValue)
+		return evalInfixInequality(lOperand, rOperand)
 	case "==":
-		return getBooleanObject(lValue == rValue)
+		return evalInfixEquality(lOperand, rOperand)
 
 	default:
 		return Null
 	}
 }
 
-func parseAsInteger(operand object.Object) int64 {
-	switch operand.Type() {
-	case object.IntegerObject:
-		return operand.(*object.Integer).Value
-	case object.BooleanObject:
-		if operand.(*object.Boolean).Value {
-			return 1
-		}
-		return 0
-	default:
-		return 0
-	}
-}
-
-func parseAsBoolean(operand object.Object) bool {
+func evalAsBoolean(operand object.Object) bool {
 	switch operand.Type() {
 	case object.BooleanObject:
 		return operand.(*object.Boolean).Value

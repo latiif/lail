@@ -81,7 +81,7 @@ func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	return true
 }
 
-func TestBangOperator(t *testing.T) {
+func TestBooleanOperators(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected bool
