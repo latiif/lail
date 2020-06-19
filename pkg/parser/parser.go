@@ -122,7 +122,7 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) peekError(t token.Type) {
-	msg := fmt.Sprintf("Parse error. want: %s, got: %s", t, p.peekToken.Type)
+	msg := fmt.Sprintf("Parsing error. At (%d:%d) Expected: %s Found: %s", p.peekToken.Line, p.peekToken.Col, t, p.peekToken.Literal)
 	p.errors = append(p.errors, msg)
 }
 
