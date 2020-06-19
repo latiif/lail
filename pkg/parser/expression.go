@@ -161,17 +161,11 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectPeek(token.Rparen) {
 		return nil
 	}
-	if !p.expectPeek(token.Lbrace) {
-		return nil
-	}
 
 	exp.Consequence = p.parseBlockStatement()
 
 	if p.peekTokenIs(token.Else) {
 		p.nextToken()
-		if !p.expectPeek(token.Lbrace) {
-			return nil
-		}
 		exp.Alternative = p.parseBlockStatement()
 	}
 
@@ -179,6 +173,10 @@ func (p *Parser) parseIfExpression() ast.Expression {
 }
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	if !p.expectPeek(token.Lbrace) {
+		return nil
+	}
+
 	block := &ast.BlockStatement{
 		Token: p.currToken,
 	}
@@ -206,10 +204,6 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 	}
 
 	exp.Params = p.parseFunctionParams()
-
-	if !p.expectPeek(token.Lbrace) {
-		return nil
-	}
 
 	exp.Body = p.parseBlockStatement()
 
