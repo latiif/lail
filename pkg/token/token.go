@@ -7,6 +7,8 @@ type Type string
 type Token struct {
 	Type    Type
 	Literal string
+	Line    int
+	Col     int
 }
 
 var keywords = map[string]Type{

@@ -50,6 +50,7 @@ func InterpretFile(in io.Reader, out io.Writer) {
 	var b bytes.Buffer
 	for scanner.Scan() {
 		b.WriteString(scanner.Text())
+		b.WriteString("\n") // to preserve new lines for token logging
 	}
 
 	e := object.NewEnv()

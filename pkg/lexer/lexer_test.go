@@ -125,5 +125,47 @@ import "file"
 		if tok.Literal != tc.expectedLiteral {
 			t.Fatalf("test[%d] - token.Literal wrong. got: %q, want: %q", i, tok.Literal, tc.expectedLiteral)
 		}
+
+		if tok.Col == 0 || tok.Line == 0 {
+			t.Fatalf("test[%d] (%q) - token.Col or token.Line are not correctly set. Both are 0.", i, tc.expectedLiteral)
+		}
+	}
+}
+
+func TestTokenCoordinates(t *testing.T) {
+	input :=
+		`
+let myvar = 5;
+if "my long string"
+`
+	tests := []struct {
+		expectedLiteral string
+		expectedLine    int
+		expectedColumn  int
+	}{
+		{"let", 1, 2},
+		{"myvar", 5, 2},
+		{"=", 11, 2},
+		{"5", 13, 2},
+		{";", 14, 2},
+		{"if", 1, 3},
+		{"my long string", 4, 3},
+	}
+
+	l := New(input)
+	for i, tc := range tests {
+		tok := l.NextToken()
+
+		if tok.Literal != tc.expectedLiteral {
+			t.Fatalf("test[%d] - token.Literal wrong. got: %q, want: %q", i, tok.Literal, tc.expectedLiteral)
+		}
+
+		if tok.Line != tc.expectedLine {
+			t.Fatalf("test[%d] - token.Line wrong. got: %d, want: %d", i, tok.Line, tc.expectedLine)
+		}
+
+		if tok.Col != tc.expectedColumn {
+			t.Fatalf("test[%d] - token.Line wrong. got: %d, want: %d", i, tok.Col, tc.expectedColumn)
+		}
 	}
 }

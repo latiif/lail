@@ -10,11 +10,13 @@ type Lexer struct {
 	pos     int  // current pos in input
 	readPos int  // current reading pos after current char
 	ch      byte // char to examin
+	line    int  // current line
+	col     int  // current col
 }
 
 // New instantiates a new LExer
 func New(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: input, line: 1, col: 1}
 	l.readChar()
 	return l
 }
@@ -28,72 +30,80 @@ func (l *Lexer) NextToken() token.Token {
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok = token.Token{Type: token.EQ, Literal: string(ch) + string(l.ch)}
+			tok = token.Token{Type: token.EQ, Literal: string(ch) + string(l.ch), Line: l.line, Col: l.col - 1}
 		} else {
-			tok = newChToken(token.Assign, l.ch)
+			tok = newChToken(token.Assign, l.ch, l.line, l.col)
 		}
 	case ';':
-		tok = newChToken(token.Semicolon, l.ch)
+		tok = newChToken(token.Semicolon, l.ch, l.line, l.col)
 	case '(':
-		tok = newChToken(token.Lparen, l.ch)
+		tok = newChToken(token.Lparen, l.ch, l.line, l.col)
 	case ')':
-		tok = newChToken(token.Rparen, l.ch)
+		tok = newChToken(token.Rparen, l.ch, l.line, l.col)
 	case '{':
-		tok = newChToken(token.Lbrace, l.ch)
+		tok = newChToken(token.Lbrace, l.ch, l.line, l.col)
 	case '}':
-		tok = newChToken(token.Rbrace, l.ch)
+		tok = newChToken(token.Rbrace, l.ch, l.line, l.col)
 	case '+':
-		tok = newChToken(token.Plus, l.ch)
+		tok = newChToken(token.Plus, l.ch, l.line, l.col)
 	case '-':
-		tok = newChToken(token.Minus, l.ch)
+		tok = newChToken(token.Minus, l.ch, l.line, l.col)
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok = token.Token{Type: token.NEQ, Literal: string(ch) + string(l.ch)}
+			tok = token.Token{Type: token.NEQ, Literal: string(ch) + string(l.ch), Line: l.line, Col: l.col - 1}
 		} else {
-			tok = newChToken(token.Bang, l.ch)
+			tok = newChToken(token.Bang, l.ch, l.line, l.col)
 		}
 	case '/':
-		tok = newChToken(token.Slash, l.ch)
+		tok = newChToken(token.Slash, l.ch, l.line, l.col)
 	case '*':
-		tok = newChToken(token.Astersik, l.ch)
+		tok = newChToken(token.Astersik, l.ch, l.line, l.col)
 	case '<':
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok = token.Token{Type: token.LTE, Literal: string(ch) + string(l.ch)}
+			tok = token.Token{Type: token.LTE, Literal: string(ch) + string(l.ch), Line: l.line, Col: l.col - 1}
 		} else {
-			tok = newChToken(token.LT, l.ch)
+			tok = newChToken(token.LT, l.ch, l.line, l.col)
 		}
 	case '>':
 		if l.peekChar() == '=' {
 			ch := l.ch
 			l.readChar()
-			tok = token.Token{Type: token.GTE, Literal: string(ch) + string(l.ch)}
+			tok = token.Token{Type: token.GTE, Literal: string(ch) + string(l.ch), Line: l.line, Col: l.col - 1}
 		} else {
-			tok = newChToken(token.GT, l.ch)
+			tok = newChToken(token.GT, l.ch, l.line, l.col)
 		}
 	case ',':
-		tok = newChToken(token.Comma, l.ch)
+		tok = newChToken(token.Comma, l.ch, l.line, l.col)
 	case '"':
 		tok.Type = token.String
+		tok.Line = l.line
+		tok.Col = l.col
 		tok.Literal = l.readString()
 		return tok
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+		tok.Line = l.line
+		tok.Col = l.col
 	default:
 		if isLetter(l.ch) {
+			tok.Line = l.line
+			tok.Col = l.col
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
+			tok.Line = l.line
+			tok.Col = l.col
 			tok.Type = token.Int
 			tok.Literal = l.readNumber()
 			return tok
 		}
-		tok = newChToken(token.Illegal, l.ch)
+		tok = newChToken(token.Illegal, l.ch, l.line, l.col)
 	}
 	l.readChar()
 	return tok
@@ -107,10 +117,21 @@ func (l *Lexer) readChar() {
 	}
 	l.pos = l.readPos
 	l.readPos++
+	if l.ch == '\n' {
+		l.col++
+		l.line = 0
+	} else {
+		l.line++
+	}
 }
 
-func newChToken(tokenType token.Type, ch byte) token.Token {
-	return token.Token{Type: tokenType, Literal: string(ch)}
+func newChToken(tokenType token.Type, ch byte, line, col int) token.Token {
+	return token.Token{
+		Type:    tokenType,
+		Literal: string(ch),
+		Line:    line,
+		Col:     col,
+	}
 }
 
 func isLetter(ch byte) bool {
