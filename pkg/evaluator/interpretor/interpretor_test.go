@@ -107,6 +107,10 @@ func TestBooleanOperators(t *testing.T) {
 		{"true + true == 2", true},
 		{"false * 4 == 0", true},
 		{"false > false", false},
+		{`"str" == "str"`, true},
+		{`1 == "1"`, true},
+		{"true == true", true},
+		{"false != false", false},
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)

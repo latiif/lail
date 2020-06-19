@@ -148,17 +148,7 @@ func evalMinusOperator(operand object.Object) object.Object {
 	}
 }
 
-func evalConcatOperation(lOperand, rOperand object.Object) object.Object {
-	return &object.String{
-		Value: fmt.Sprintf("%s%s", lOperand.(*object.String).Value, rOperand.(*object.String).Value),
-	}
-}
-
 func evalInfixExpression(lOperand object.Object, operator string, rOperand object.Object) object.Object {
-
-	if lOperand.Type() == object.StringObject && rOperand.Type() == object.StringObject && operator == "+" {
-		return evalConcatOperation(lOperand, rOperand)
-	}
 
 	if lOperand.Type() != object.IntegerObject && rOperand.Type() == object.IntegerObject && operator == "-" {
 		return newIncompatibleTypes(operator, lOperand, rOperand)
@@ -169,9 +159,9 @@ func evalInfixExpression(lOperand object.Object, operator string, rOperand objec
 
 	switch operator {
 	case "+":
-		return &object.Integer{Value: lValue + rValue}
+		return evalInfixPlus(lOperand, rOperand)
 	case "-":
-		return &object.Integer{Value: lValue - rValue}
+		return evalInfixMinus(lOperand, rOperand)
 	case "*":
 		return &object.Integer{Value: lValue * rValue}
 	case "/":
