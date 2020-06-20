@@ -211,11 +211,17 @@ func evalBlockStatement(block *ast.BlockStatement, e *object.Env) object.Object 
 }
 
 func evalIdentifier(ident *ast.Identifier, e *object.Env) object.Object {
-	val, ok := e.Get(ident.Value)
-	if !ok {
-		return Null
+	// Check if it's a user-declared symbol
+	if val, ok := e.Get(ident.Value); ok {
+		return val
 	}
-	return val
+
+	// Check if it's a built in
+	if val, ok := builtins[ident.Value]; ok {
+		return val
+	}
+
+	return Null
 }
 func evalExpressions(exprs []ast.Expression, e *object.Env) []object.Object {
 	res := make([]object.Object, len(exprs))
