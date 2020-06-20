@@ -2,6 +2,8 @@ package object
 
 type ObjectType string
 
+type BuiltinFunction func(args ...Object) Object
+
 type Object interface {
 	Type() ObjectType
 	Inspect() string
@@ -15,4 +17,5 @@ const (
 	FunctionObject = "FunctionObject"
 	StringObject   = "StringObject"
 	ErrorObject    = "ErrorObject"
+	BuiltinObject  = "BuiltinObject"
 )
