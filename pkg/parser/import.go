@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/latiif/lail/pkg/ast"
 	"github.com/latiif/lail/pkg/lexer"
@@ -17,13 +18,13 @@ func (p *Parser) parseImportStatement() *ast.ImportStatement {
 		return nil
 	}
 
-	rawFile, err := retrieveFile(p.currToken.Literal)
+	rawFile, err := retrieveFile(filepath.Join(p.Context, p.currToken.Literal))
 	if err != nil {
 		p.errors = append(p.errors, fmt.Sprintf("Unable to locate and read file at %s", p.currToken.Literal))
 		return nil
 	}
 	li := lexer.New(rawFile)
-	pi := New(li)
+	pi := New(li, filepath.Dir(filepath.Join(p.Context, p.currToken.Literal)))
 
 	stmt.Program = pi.ParseProgram()
 

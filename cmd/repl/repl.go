@@ -21,7 +21,7 @@ func Start(in io.Reader, out io.Writer) {
 	for scanner.Scan() {
 		line := scanner.Text()
 		l := lexer.New(line)
-		p := parser.New(l)
+		p := parser.New(l, "./")
 
 		prog := p.ParseProgram()
 		if len(p.Errors()) != 0 {
@@ -45,7 +45,7 @@ func printParserErrors(out io.Writer, errors []string) {
 	}
 }
 
-func InterpretFile(in io.Reader, out io.Writer, err io.Writer) {
+func InterpretFile(context string, in io.Reader, out io.Writer, err io.Writer) {
 	scanner := bufio.NewScanner(in)
 	var b bytes.Buffer
 	for scanner.Scan() {
@@ -55,7 +55,7 @@ func InterpretFile(in io.Reader, out io.Writer, err io.Writer) {
 
 	e := object.NewEnv()
 	l := lexer.New(b.String())
-	p := parser.New(l)
+	p := parser.New(l, context)
 
 	prog := p.ParseProgram()
 	if len(p.Errors()) != 0 {

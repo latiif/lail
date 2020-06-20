@@ -23,14 +23,17 @@ type Parser struct {
 	prefixParseFns map[token.Type]prefixParseFn
 	infixParseFns  map[token.Type]infixParseFn
 
+	Context string // Defines context (directory) for the parser
+
 	errors []string
 }
 
 // New instantiates a Parser from a Lexer
-func New(l *lexer.Lexer) *Parser {
+func New(l *lexer.Lexer, context string) *Parser {
 	p := &Parser{
-		l:      l,
-		errors: []string{},
+		l:       l,
+		Context: context,
+		errors:  []string{},
 	}
 
 	p.prefixParseFns = make(map[token.Type]prefixParseFn)

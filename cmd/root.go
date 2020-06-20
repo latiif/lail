@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/latiif/lail/cmd/repl"
 	"github.com/spf13/cobra"
@@ -19,7 +20,7 @@ var rootCmd = &cobra.Command{
 				if err != nil {
 					continue
 				}
-				repl.InterpretFile(fileHandle, os.Stdout, os.Stderr)
+				repl.InterpretFile(filepath.Dir(file), fileHandle, os.Stdout, os.Stderr)
 				fileHandle.Close()
 			}
 		}
