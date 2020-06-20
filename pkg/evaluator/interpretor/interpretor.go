@@ -232,13 +232,18 @@ func evalExpressions(exprs []ast.Expression, e *object.Env) []object.Object {
 	return res
 }
 func applyFunction(fn object.Object, args []object.Object) object.Object {
-	function, ok := fn.(*object.Function)
-	if !ok {
-		return Null
+	// check if it's a user defined function
+	if function, ok := fn.(*object.Function); ok {
+		fnExtendedEnv := extendFunctionEnv(function, args)
+		return unwrapReturnValue(Eval(function.Body, fnExtendedEnv))
 	}
 
-	fnExtendedEnv := extendFunctionEnv(function, args)
-	return unwrapReturnValue(Eval(function.Body, fnExtendedEnv))
+	// check if it's a built in function
+	if function, ok := fn.(*object.Builtin); ok {
+		return function.Function(args...)
+	}
+
+	return Null
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Env {
