@@ -266,6 +266,9 @@ func evalExpressions(exprs []ast.Expression, e *object.Env) []object.Object {
 func applyFunction(fn object.Object, args []object.Object) object.Object {
 	// check if it's a user defined function
 	if function, ok := fn.(*object.Function); ok {
+		if len(function.Params) != len(args) {
+			return newIllegalStateException(fmt.Sprintf("function call expected %d parameter(s); got %d argument(s)", len(function.Params), len(args)))
+		}
 		fnExtendedEnv := extendFunctionEnv(function, args)
 		return unwrapReturnValue(Eval(function.Body, fnExtendedEnv))
 	}
@@ -299,9 +302,15 @@ func newIncompatibleTypes(operator string, lhs, rhs object.Object) object.Object
 	}
 }
 
+func newIllegalStateException(msg string) object.Object {
+	return &object.Error{
+		Message: fmt.Sprintf("Illegal State: %s.", msg),
+	}
+}
+
 func encounteredError(result object.Object) bool {
 	if result.Type() == object.ErrorObject {
-		fmt.Printf("Error:\t%v\n", result.Inspect())
+		fmt.Printf("Error: %v\n", result.Inspect())
 		return true
 	}
 	return false
