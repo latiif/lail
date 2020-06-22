@@ -36,7 +36,7 @@ func TestEvalIntegerExpression(t *testing.T) {
 }
 func testEval(input string) object.Object {
 	l := lexer.New(input)
-	p := parser.New(l)
+	p := parser.New(l, "./")
 	program := p.ParseProgram()
 	return Eval(program, object.NewEnv())
 }
