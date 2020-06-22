@@ -21,21 +21,39 @@ var (
 func Eval(node ast.Node, env *object.Env) object.Object {
 	switch node := node.(type) {
 	case *ast.ImportStatement:
-		return evalProgram(node.Program, env)
+		res := evalProgram(node.Program, env)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	case *ast.Program:
-		return evalProgram(node, env)
+		res := evalProgram(node, env)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	case *ast.LetStatement:
 		rhs := Eval(node.Value, env)
+		if encounteredError(rhs) {
+			return Null
+		}
 		return env.Set(node.Name.Value, rhs)
 	case *ast.Identifier:
-		return evalIdentifier(node, env)
+		res := evalIdentifier(node, env)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	case *ast.BlockStatement:
-		return evalBlockStatement(node, env)
+		res := evalBlockStatement(node, env)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	case *ast.ExpressionStatement:
 		res := Eval(node.Expression, env)
-		if res.Type() == object.ErrorObject {
-			fmt.Println("Compile-time error")
-			return nil
+		if encounteredError(res) {
+			return Null
 		}
 		return res
 	case *ast.IntegerLiteral:
@@ -47,7 +65,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 			Value: node.Value,
 		}
 	case *ast.Boolean:
-		return getBooleanObject(node.Value)
+		res := getBooleanObject(node.Value)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	case *ast.IfExpression:
 		if evalAsBoolean(Eval(node.Condition, env)) {
 			return Eval(node.Consequence, env)
@@ -63,10 +85,16 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		}
 	case *ast.PrefixExpression:
 		rhs := Eval(node.Right, env)
+		if encounteredError(rhs) {
+			return Null
+		}
 		return evalPrefixExpression(node.Operator, rhs)
 	case *ast.InfixExpression:
 		rhs := Eval(node.Right, env)
 		lhs := Eval(node.Left, env)
+		if encounteredError(rhs) || encounteredError(lhs) {
+			return Null
+		}
 		return evalInfixExpression(lhs, node.Operator, rhs)
 	case *ast.FunctionLiteral:
 		params := node.Params
@@ -79,7 +107,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 	case *ast.CallExpression:
 		function := Eval(node.Function, env)
 		args := evalExpressions(node.Args, env)
-		return applyFunction(function, args)
+		res := applyFunction(function, args)
+		if encounteredError(res) {
+			return Null
+		}
+		return res
 	}
 	return nil
 }
@@ -265,4 +297,12 @@ func newIncompatibleTypes(operator string, lhs, rhs object.Object) object.Object
 	return &object.Error{
 		Message: fmt.Sprintf("Operator %s does not support operands of type %q and %q.", operator, lhs.Type(), rhs.Type()),
 	}
+}
+
+func encounteredError(result object.Object) bool {
+	if result.Type() == object.ErrorObject {
+		fmt.Printf("Error:\t%v\n", result.Inspect())
+		return true
+	}
+	return false
 }
