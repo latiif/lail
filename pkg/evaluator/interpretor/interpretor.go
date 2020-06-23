@@ -258,7 +258,7 @@ func evalIdentifier(ident *ast.Identifier, e *object.Env) object.Object {
 		return val
 	}
 
-	return Null
+	return newIllegalStateException(fmt.Sprintf("Undeclared identifier: %s", ident.Value))
 }
 func evalExpressions(exprs []ast.Expression, e *object.Env) []object.Object {
 	res := make([]object.Object, len(exprs))
