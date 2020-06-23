@@ -279,3 +279,34 @@ func (p *Parser) parseFunctionArgs() []ast.Expression {
 
 	return args
 }
+
+func (p *Parser) parseArray() ast.Expression {
+	exp := &ast.Array{
+		Token:    p.currToken,
+		Elements: make([]ast.Expression, 0),
+	}
+
+	// empty array []
+	if p.peekTokenIs(token.Rbracket) {
+		p.nextToken()
+		return exp
+	}
+
+	p.nextToken()
+	e := p.parseExpression(Lowest)
+	exp.Elements = append(exp.Elements, e)
+
+	for p.peekTokenIs(token.Comma) {
+		p.nextToken() // consume the comma
+		p.nextToken()
+
+		e := p.parseExpression(Lowest)
+		exp.Elements = append(exp.Elements, e)
+	}
+
+	if !p.expectPeek(token.Rbracket) {
+		return exp
+	}
+
+	return exp
+}

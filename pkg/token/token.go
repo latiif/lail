@@ -55,6 +55,10 @@ const (
 	Lbrace = "{"
 	// Rbrace is right brace }
 	Rbrace = "}"
+	// Lbracket is left bracket
+	Lbracket = "["
+	// Rbracket is right bracket
+	Rbracket = "]"
 	// LT (less than)
 	LT = "<"
 	// GT (greater than)

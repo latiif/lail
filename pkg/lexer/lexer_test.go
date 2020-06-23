@@ -26,6 +26,7 @@ if (5 < 10) {
 "foobar"
 "foo bar"
 import "file"
+[1, 2];
 `
 	tests := []struct {
 		expectedType    token.Type
@@ -110,6 +111,12 @@ import "file"
 		{token.String, "foo bar"},
 		{token.Import, "import"},
 		{token.String, "file"},
+		{token.Lbracket, "["},
+		{token.Int, "1"},
+		{token.Comma, ","},
+		{token.Int, "2"},
+		{token.Rbracket, "]"},
+		{token.Semicolon, ";"},
 		{token.EOF, ""},
 	}
 

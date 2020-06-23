@@ -96,6 +96,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 			return Null
 		}
 		return evalInfixExpression(lhs, node.Operator, rhs)
+	case *ast.Array:
+		elements := evalExpressions(node.Elements, env)
+		return &object.Array{
+			Value: elements,
+		}
 	case *ast.FunctionLiteral:
 		params := node.Params
 		body := node.Body

@@ -12,6 +12,7 @@ type Object interface {
 const (
 	IntegerObject  = "Integer"
 	BooleanObject  = "Boolean"
+	ArrayObject    = "Array"
 	NullObject     = "Null"
 	ReturnObject   = "ReturnObject"
 	FunctionObject = "FunctionObject"
