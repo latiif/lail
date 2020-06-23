@@ -46,12 +46,20 @@ func evalInfixMinus(lhs, rhs object.Object) object.Object {
 // 1 + 1 => 2
 // true + true + false => 2
 // "str" + 1 => "str1"
+// [2,4,"foo"] + ["bar", true] = [2,4,"foo","bar",true]
 func evalInfixPlus(lhs, rhs object.Object) object.Object {
 
 	// <int> + <int> = addition
 	if rhs.Type() == object.IntegerObject && lhs.Type() == object.IntegerObject {
 		return &object.Integer{
 			Value: lhs.(*object.Integer).Value + rhs.(*object.Integer).Value,
+		}
+	}
+
+	// <arr> + <arr> = [<arr>, <arr>]
+	if rhs.Type() == object.ArrayObject && lhs.Type() == object.ArrayObject {
+		return &object.Array{
+			Value: append(lhs.(*object.Array).Value, rhs.(*object.Array).Value...),
 		}
 	}
 
