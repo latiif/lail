@@ -18,37 +18,23 @@ As Lail is still under development, the language specification _can_ change.
 
 ### Program
 
-A Lail program is zero or more statements and expressions. A program's result is it's last expression. Statements are separated by `;`.
+A Lail program is zero or more statements and expressions. A program's result is its last expression. Statements are separated by `;`.
 
 ```
-let lang = "fr";
-let greeting = if (lang == "en") {
-    "Hello"
-} else if (lang == "fr") {
-    "Salut"
-} else {
-    "Im speechless"
-}
+let greet = fn(name) "Hi," + name + "!";
 
-greeting + " Lail";
-```
-
-Lail treats functions as first-class citizens.
-
-```
-let fact = fn(x) if (x>1) x*fact(x-1) else 1;
-
-let factorial = fn(x) {
-    if (x>1) {
-        return x*fact(x-1);
-    } else {
-        return 1;
+let map = fn(arr, func) {
+    if (arr != []) {
+        return [arr.head().func()] + arr.tail().map(func);
     }
-}
+    return [];
+};
 
-fact(5) == factorial(5);
+["Peter", "Paul"].map(greet);
 ```
 
-Both `fact` and `factorial` are valid.
+* Functions are first class citizens.
 
-In `fact` we see that `if-else` are expressions and that `{` and `}` are optional for one-statement blocks.
+* Dot Notation allows for chaining functions and for more readable code.
+
+* All functions are anonymous functions.
