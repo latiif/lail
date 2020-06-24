@@ -94,7 +94,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Line = l.line
 		tok.Col = l.col
 	default:
-		if isLetter(l.ch) {
+		if isLetter(l.ch) || l.ch == '_' {
 			tok.Line = l.line
 			tok.Col = l.col
 			tok.Literal = l.readIdentifier()
@@ -148,8 +148,10 @@ func isDigit(ch byte) bool {
 
 func (l *Lexer) readIdentifier() string {
 	pos := l.pos
-	for isLetter(l.ch) {
-		l.readChar()
+	if isLetter(l.ch) || l.ch == '_' {
+		for isLetter(l.ch) || isDigit(l.ch) || l.ch == '_' {
+			l.readChar()
+		}
 	}
 	return l.input[pos:l.pos]
 }
