@@ -82,6 +82,8 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	case ',':
 		tok = newChToken(token.Comma, l.ch, l.line, l.col)
+	case '.':
+		tok = newChToken(token.Dot, l.ch, l.line, l.col)
 	case '"':
 		tok.Type = token.String
 		tok.Line = l.line

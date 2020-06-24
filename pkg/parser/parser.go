@@ -61,6 +61,7 @@ func New(l *lexer.Lexer, context string) *Parser {
 	p.registerInfix(token.LTE, p.parseInfixExpression)
 	p.registerInfix(token.GTE, p.parseInfixExpression)
 	p.registerInfix(token.Lparen, p.parseCallExpression)
+	p.registerInfix(token.Dot, p.parseInfixCallExpression)
 
 	p.nextToken() // set currToken
 	p.nextToken() // set peekToken

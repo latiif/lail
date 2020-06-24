@@ -45,6 +45,8 @@ const (
 	Slash = "/"
 	// Comma ,
 	Comma = ","
+	// Dot .
+	Dot = "."
 	// Semicolon ;
 	Semicolon = ";"
 	// Lparen is left parenthesis (

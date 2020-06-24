@@ -27,7 +27,7 @@ if (5 < 10) {
 "foo bar"
 import "file"
 [1, 2];
-_this_is_1_valid_identifier
+_this_is_1_valid_identifier.
 `
 	tests := []struct {
 		expectedType    token.Type
@@ -119,6 +119,7 @@ _this_is_1_valid_identifier
 		{token.Rbracket, "]"},
 		{token.Semicolon, ";"},
 		{token.Ident, "_this_is_1_valid_identifier"},
+		{token.Dot, "."},
 		{token.EOF, ""},
 	}
 

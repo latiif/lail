@@ -31,6 +31,7 @@ var precedences = map[token.Type]int{
 	token.Slash:    Product,
 	token.Astersik: Product,
 	token.Lparen:   Call,
+	token.Dot:      Product,
 }
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
@@ -252,6 +253,20 @@ func (p *Parser) parseCallExpression(fnLiteral ast.Expression) ast.Expression {
 		Function: fnLiteral,
 	}
 	exp.Args = p.parseFunctionArgs()
+	return exp
+}
+
+func (p *Parser) parseInfixCallExpression(left ast.Expression) ast.Expression {
+	exp := &ast.CallExpression{
+		Token: p.currToken,
+	}
+	precedence := p.currPrecedence()
+	p.nextToken()
+	callExpression := p.parseExpression(precedence)
+	if ce, ok := callExpression.(*ast.CallExpression); ok {
+		exp.Function = ce.Function
+		exp.Args = append([]ast.Expression{left}, ce.Args...)
+	}
 	return exp
 }
 
