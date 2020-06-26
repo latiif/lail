@@ -232,6 +232,21 @@ func TestFunctionApplication(t *testing.T) {
 	}
 }
 
+func TestMethodChaining(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{`[1,"two"].head() == 1`, true},
+		{"3.(fn (x,y) x*y )(4) == 12", true},
+		{"tail([1,2].tail()) == []", true},
+	}
+
+	for _, tt := range tests {
+		testBooleanObject(t, testEval(tt.input), tt.expected)
+	}
+}
+
 func TestStringLiteral(t *testing.T) {
 	input := `"Hello World!"`
 	evaluated := testEval(input)
