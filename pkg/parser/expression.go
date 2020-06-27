@@ -301,22 +301,18 @@ func (p *Parser) parseArray() ast.Expression {
 		Elements: make([]ast.Expression, 0),
 	}
 
-	// empty array []
-	if p.peekTokenIs(token.Rbracket) {
+	for {
+		if p.peekTokenIs(token.Rbracket) {
+			p.nextToken()
+			return exp
+		}
 		p.nextToken()
-		return exp
-	}
-
-	p.nextToken()
-	e := p.parseExpression(Lowest)
-	exp.Elements = append(exp.Elements, e)
-
-	for p.peekTokenIs(token.Comma) {
-		p.nextToken() // consume the comma
-		p.nextToken()
-
 		e := p.parseExpression(Lowest)
 		exp.Elements = append(exp.Elements, e)
+		if !p.peekTokenIs(token.Comma) {
+			break
+		}
+		p.nextToken()
 	}
 
 	if !p.expectPeek(token.Rbracket) {
