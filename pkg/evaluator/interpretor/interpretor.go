@@ -79,7 +79,13 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		}
 		return Null
 	case *ast.ReturnStatement:
-		val := Eval(node.ReturnValue, env)
+		var val object.Object
+		// an empty return statement
+		if node.ReturnValue == nil {
+			val = Null
+		} else {
+			val = Eval(node.ReturnValue, env)
+		}
 		return &object.Return{
 			Value: val,
 		}

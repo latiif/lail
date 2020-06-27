@@ -8,8 +8,10 @@ import (
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.currToken}
 
-	p.nextToken()
-	stmt.ReturnValue = p.parseExpression(Lowest)
+	if !p.peekTokenIs(token.Semicolon) {
+		p.nextToken()
+		stmt.ReturnValue = p.parseExpression(Lowest)
+	}
 
 	for p.peekTokenIs(token.Semicolon) {
 		p.nextToken()
