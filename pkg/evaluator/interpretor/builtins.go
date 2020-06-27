@@ -29,7 +29,7 @@ var builtins = map[string]*object.Builtin{
 			}
 			array, ok := args[0].(*object.Array)
 			if !ok {
-				return newIllegalStateException(fmt.Sprintf("%s is not an array literal.", args[0].Inspect()))
+				return newIllegalStateException(fmt.Sprintf("head: %s is not an array literal.", args[0].Inspect()))
 			}
 			// head of [] is Null
 			if len(array.Value) == 0 {
@@ -45,7 +45,7 @@ var builtins = map[string]*object.Builtin{
 			}
 			array, ok := args[0].(*object.Array)
 			if !ok {
-				return newIllegalStateException(fmt.Sprintf("%s is not an array literal.", args[0].Inspect()))
+				return newIllegalStateException(fmt.Sprintf("tail: %s is not an array literal.", args[0].Inspect()))
 			}
 			// return empty array
 			// tail of [] is []
