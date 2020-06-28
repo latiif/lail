@@ -124,10 +124,10 @@ func (l *Lexer) readChar() {
 	l.pos = l.readPos
 	l.readPos++
 	if l.ch == '\n' {
-		l.col++
-		l.line = 0
-	} else {
 		l.line++
+		l.col = 0
+	} else {
+		l.col++
 	}
 }
 

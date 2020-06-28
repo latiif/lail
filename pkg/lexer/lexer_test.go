@@ -153,13 +153,13 @@ if "my long string"
 		expectedLine    int
 		expectedColumn  int
 	}{
-		{"let", 1, 2},
-		{"myvar", 5, 2},
-		{"=", 11, 2},
-		{"5", 13, 2},
-		{";", 14, 2},
-		{"if", 1, 3},
-		{"my long string", 4, 3},
+		{"let", 2, 1},
+		{"myvar", 2, 5},
+		{"=", 2, 11},
+		{"5", 2, 13},
+		{";", 2, 14},
+		{"if", 3, 1},
+		{"my long string", 3, 4},
 	}
 
 	l := New(input)
