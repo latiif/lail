@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/latiif/lail/pkg/ast"
+	"github.com/latiif/lail/pkg/token"
 
 	"github.com/latiif/lail/pkg/object"
 )
@@ -96,6 +97,19 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 		}
 		return evalPrefixExpression(node.Operator, rhs)
 	case *ast.InfixExpression:
+		// If it is assignment expression
+		if node.Operator == token.Assign {
+			id, ok := node.Left.(*ast.Identifier)
+			if !ok {
+				fmt.Println(node.Left)
+				return newIllegalStateException("Left hand side of assignment must be an identifier.")
+			}
+			rhs := Eval(node.Right, env)
+			if encounteredError(rhs) {
+				return Null
+			}
+			return env.Set(id.Value, rhs)
+		}
 		rhs := Eval(node.Right, env)
 		lhs := Eval(node.Left, env)
 		if encounteredError(rhs) || encounteredError(lhs) {

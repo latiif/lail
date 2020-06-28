@@ -11,6 +11,7 @@ import (
 const (
 	_ int = iota
 	Lowest
+	Assignment
 	Equals
 	LessGreater
 	Sum
@@ -20,6 +21,7 @@ const (
 )
 
 var precedences = map[token.Type]int{
+	token.Assign:   Assignment,
 	token.EQ:       Equals,
 	token.NEQ:      Equals,
 	token.LT:       LessGreater,
@@ -320,4 +322,20 @@ func (p *Parser) parseArray() ast.Expression {
 	}
 
 	return exp
+}
+
+func (p *Parser) parseAssignmentExpression(left ast.Expression) ast.Expression {
+	_, ok := left.(*ast.Identifier)
+	if !ok {
+		p.errors = append(p.errors, fmt.Sprintf("Parsing error: At (%d:%d) Expected: %s Found: %s", p.currToken.Line, p.currToken.Col, "Identifier as left hand side", left.String()))
+	}
+	expr := &ast.InfixExpression{
+		Token:    p.currToken,
+		Operator: p.currToken.Literal,
+		Left:     left,
+	}
+	p.nextToken()
+	expr.Right = p.parseExpression(Lowest)
+
+	return expr
 }
