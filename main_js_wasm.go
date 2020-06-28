@@ -21,9 +21,13 @@ func main() {
 func interpret(this js.Value, i []js.Value) interface{} {
 	in := strings.NewReader(i[0].String())
 	out := &bytes.Buffer{}
-	repl.Start(in, out)
+	err := &bytes.Buffer{}
+	repl.InterpretFile("./", in, out, err)
 	js.Global().Set("output", out.String())
-	return out.String()
+	if err.String() == "" {
+		return out.String()
+	}
+	return err.String()
 }
 
 func registerCallbacks() {
