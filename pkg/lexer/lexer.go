@@ -1,6 +1,8 @@
 package lexer
 
 import (
+	"bytes"
+
 	"github.com/latiif/lail/pkg/token"
 )
 
@@ -158,14 +160,30 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.pos]
 }
 
+var escapeCharacters = map[byte]byte{
+	'n':  '\n',
+	'r':  '\r',
+	'\\': '\\',
+	'"':  '"',
+	't':  '\t',
+}
+
 func (l *Lexer) readString() string {
+	var str bytes.Buffer
 	l.readChar()
-	pos := l.pos
 	for l.ch != '"' {
+		if l.ch == '\\' {
+			l.readChar()
+			if val, ok := escapeCharacters[l.ch]; ok {
+				str.WriteByte(val)
+			}
+		} else {
+			str.WriteByte(l.ch)
+		}
 		l.readChar()
 	}
 	l.readChar()
-	return l.input[pos : l.pos-1]
+	return str.String()
 }
 
 func (l *Lexer) skipWhiteSpace() {

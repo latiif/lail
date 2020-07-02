@@ -28,6 +28,7 @@ if (5 < 10) {
 import "file"
 [1, 2];
 _this_is_1_valid_identifier.
+"this\nstring\thas\tescape\"characters\\"
 `
 	tests := []struct {
 		expectedType    token.Type
@@ -120,6 +121,7 @@ _this_is_1_valid_identifier.
 		{token.Semicolon, ";"},
 		{token.Ident, "_this_is_1_valid_identifier"},
 		{token.Dot, "."},
+		{token.String, "this\nstring\thas\tescape\"characters\\"},
 		{token.EOF, ""},
 	}
 
