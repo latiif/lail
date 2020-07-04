@@ -271,3 +271,21 @@ func TestStringConcatenation(t *testing.T) {
 		t.Errorf("String has wrong value. got=%q", str.Value)
 	}
 }
+
+func TestBuiltins(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected object.Object
+	}{
+		{"head([1,2])", &object.Integer{Value: 1}},
+		{"head([])", Null},
+		{"tail([1])", &object.Array{}},
+	}
+
+	for _, tt := range tests {
+		got := testEval(tt.input)
+		if got.Inspect() != tt.expected.Inspect() {
+			t.Fatalf("Error, got: %v want: %v\n", got, tt.expected)
+		}
+	}
+}
