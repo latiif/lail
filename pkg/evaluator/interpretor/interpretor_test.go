@@ -282,6 +282,8 @@ func TestBuiltins(t *testing.T) {
 		{"tail([1])", &object.Array{}},
 		{`head("lail")`, &object.String{Value: "l"}},
 		{`head("")`, Null},
+		{`tail("lail")`, &object.String{Value: "ail"}},
+		{`tail("")`, &object.String{Value: ""}},
 	}
 
 	for _, tt := range tests {

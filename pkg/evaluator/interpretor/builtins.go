@@ -52,17 +52,27 @@ var builtins = map[string]*object.Builtin{
 			if len(args) != 1 {
 				return newIllegalStateException(fmt.Sprintf("tail takes 1 argument; %d were provided.", len(args)))
 			}
-			array, ok := args[0].(*object.Array)
-			if !ok {
+			switch args[0].(type) {
+			case *object.Array:
+				// return empty array
+				// tail of [] is []
+				array := args[0].(*object.Array)
+				if len(array.Value) == 0 {
+					return &object.Array{}
+				}
+				return &object.Array{
+					Value: array.Value[1:],
+				}
+			case *object.String:
+				str := args[0].(*object.String)
+				if len(str.Value) == 0 {
+					return &object.String{}
+				}
+				return &object.String{
+					Value: str.Value[1:],
+				}
+			default:
 				return newIllegalStateException(fmt.Sprintf("tail: %s is not an array literal.", args[0].Inspect()))
-			}
-			// return empty array
-			// tail of [] is []
-			if len(array.Value) == 0 {
-				return &object.Array{}
-			}
-			return &object.Array{
-				Value: array.Value[1:],
 			}
 		},
 	},
