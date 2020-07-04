@@ -27,15 +27,24 @@ var builtins = map[string]*object.Builtin{
 			if len(args) != 1 {
 				return newIllegalStateException(fmt.Sprintf("head takes 1 argument; %d were provided.", len(args)))
 			}
-			array, ok := args[0].(*object.Array)
-			if !ok {
+			switch args[0].(type) {
+			case *object.Array:
+				argument := args[0].(*object.Array)
+				// head of [] is Null
+				if len(argument.Value) == 0 {
+					return Null
+				}
+				return argument.Value[0]
+			case *object.String:
+				argument := args[0].(*object.String)
+				// head of "" is Null
+				if len(argument.Value) == 0 {
+					return Null
+				}
+				return &object.String{Value: fmt.Sprintf("%c", argument.Value[0])}
+			default:
 				return newIllegalStateException(fmt.Sprintf("head: %s is not an array literal.", args[0].Inspect()))
 			}
-			// head of [] is Null
-			if len(array.Value) == 0 {
-				return Null
-			}
-			return array.Value[0]
 		},
 	},
 	"tail": {
