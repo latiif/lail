@@ -15,8 +15,8 @@ const (
 	ArrayObject    = "Array"
 	NullObject     = "Null"
 	ReturnObject   = "ReturnObject"
-	FunctionObject = "FunctionObject"
-	StringObject   = "StringObject"
-	ErrorObject    = "ErrorObject"
+	FunctionObject = "Function"
+	StringObject   = "String"
+	ErrorObject    = "Error"
 	BuiltinObject  = "BuiltinObject"
 )
