@@ -110,8 +110,8 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 			}
 			return env.Set(id.Value, rhs)
 		}
-		rhs := Eval(node.Right, env)
 		lhs := Eval(node.Left, env)
+		rhs := Eval(node.Right, env)
 		if encounteredError(rhs) || encounteredError(lhs) {
 			return Null
 		}
