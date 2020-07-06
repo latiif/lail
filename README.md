@@ -20,18 +20,7 @@ As Lail is still under development, the language specification _can_ change.
 
 A Lail program is zero or more statements and expressions. A program's result is its last expression. Statements are separated by `;`.
 
-```
-greet = fn(name) "Hi," + name + "!";
-
-map = fn(arr, func) {
-    if (arr != []) {
-        return [arr.head().func()] + arr.tail().map(func);
-    }
-    return [];
-};
-
-["Peter", "Paul"].map(greet);
-```
+![lail example](https://i.imgur.com/I0FpaMy.png)
 
 * Functions are first class citizens.
 
@@ -40,3 +29,7 @@ map = fn(arr, func) {
 * All functions are anonymous functions.
 
 * Assignment can be done by `let` or directly with `=`. Assignment is an expression.
+
+* Last expression in a function is its return value.
+
+* Identifiers can include any unicode letter plus emojis.
