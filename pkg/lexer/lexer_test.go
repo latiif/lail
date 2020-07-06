@@ -29,6 +29,7 @@ import "file"
 [1, 2];
 _this_is_1_valid_identifier.
 "this\nstring\thas\tescape\"characters\\"
+مت💜å
 `
 	tests := []struct {
 		expectedType    token.Type
@@ -122,6 +123,7 @@ _this_is_1_valid_identifier.
 		{token.Ident, "_this_is_1_valid_identifier"},
 		{token.Dot, "."},
 		{token.String, "this\nstring\thas\tescape\"characters\\"},
+		{token.Ident, "مت💜å"},
 		{token.EOF, ""},
 	}
 

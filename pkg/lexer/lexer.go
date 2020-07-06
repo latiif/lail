@@ -2,6 +2,8 @@ package lexer
 
 import (
 	"bytes"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/latiif/lail/pkg/token"
 )
@@ -11,7 +13,7 @@ type Lexer struct {
 	input   string
 	pos     int  // current pos in input
 	readPos int  // current reading pos after current char
-	ch      byte // char to examin
+	ch      rune // char to examine
 	line    int  // current line
 	col     int  // current col
 }
@@ -118,13 +120,14 @@ func (l *Lexer) NextToken() token.Token {
 }
 
 func (l *Lexer) readChar() {
+	var size int
 	if l.readPos >= len(l.input) {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.readPos]
+		l.ch, size = utf8.DecodeRuneInString(l.input[l.readPos:])
 	}
 	l.pos = l.readPos
-	l.readPos++
+	l.readPos += size
 	if l.ch == '\n' {
 		l.line++
 		l.col = 0
@@ -133,7 +136,7 @@ func (l *Lexer) readChar() {
 	}
 }
 
-func newChToken(tokenType token.Type, ch byte, line, col int) token.Token {
+func newChToken(tokenType token.Type, ch rune, line, col int) token.Token {
 	return token.Token{
 		Type:    tokenType,
 		Literal: string(ch),
@@ -142,12 +145,13 @@ func newChToken(tokenType token.Type, ch byte, line, col int) token.Token {
 	}
 }
 
-func isLetter(ch byte) bool {
-	return (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z')
+func isLetter(ch rune) bool {
+
+	return unicode.IsLetter(ch) || isEmoji(ch)
 }
 
-func isDigit(ch byte) bool {
-	return (ch >= '0' && ch <= '9')
+func isDigit(ch rune) bool {
+	return unicode.IsDigit(ch)
 }
 
 func (l *Lexer) readIdentifier() string {
@@ -160,7 +164,7 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.pos]
 }
 
-var escapeCharacters = map[byte]byte{
+var escapeCharacters = map[rune]byte{
 	'n':  '\n',
 	'r':  '\r',
 	'\\': '\\',
@@ -178,7 +182,7 @@ func (l *Lexer) readString() string {
 				str.WriteByte(val)
 			}
 		} else {
-			str.WriteByte(l.ch)
+			str.WriteRune(l.ch)
 		}
 		l.readChar()
 	}
@@ -205,4 +209,15 @@ func (l *Lexer) peekChar() byte {
 		return 0
 	}
 	return l.input[l.readPos]
+}
+
+func isEmoji(ch rune) bool {
+	return (ch >= 0x1F600 && ch <= 0x1F64F) || // Emoticons
+		(ch >= 0x1F300 && ch <= 0x1F5FF) || // Misc Symbols and Pictographs
+		(ch >= 0x1F680 && ch <= 0x1F6FF) || // Transport and Map
+		(ch >= 0x2600 && ch <= 0x26FF) || // Misc symbols
+		(ch >= 0x2700 && ch <= 0x27BF) || // Dingbats
+		(ch >= 0xFE00 && ch <= 0xFE0F) || // Variation Selectors
+		(ch >= 0x1F900 && ch <= 0x1F9FF) || // Supplemental Symbols and Pictographs
+		(ch >= 0x1F1E6 && ch <= 0x1F1FF) // Flags
 }
