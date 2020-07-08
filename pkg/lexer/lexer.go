@@ -38,7 +38,7 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newChToken(token.Assign, l.ch, l.line, l.col)
 		}
-	case ';':
+	case '؛':
 		tok = newChToken(token.Semicolon, l.ch, l.line, l.col)
 	case '(':
 		tok = newChToken(token.Lparen, l.ch, l.line, l.col)
@@ -84,7 +84,7 @@ func (l *Lexer) NextToken() token.Token {
 		} else {
 			tok = newChToken(token.GT, l.ch, l.line, l.col)
 		}
-	case ',':
+	case '،':
 		tok = newChToken(token.Comma, l.ch, l.line, l.col)
 	case '.':
 		tok = newChToken(token.Dot, l.ch, l.line, l.col)

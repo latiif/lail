@@ -12,14 +12,16 @@ type Token struct {
 }
 
 var keywords = map[string]Type{
-	"fn":     Function,
-	"let":    Let,
-	"true":   True,
-	"false":  False,
-	"if":     If,
-	"else":   Else,
-	"import": Import,
-	"return": Return,
+	"تا":   Function,
+	"دع":   Let,
+	"صح":   True,
+	"خطأ":  False,
+	"إذا":  If,
+	"اذا":  If,
+	"وإلا": Else,
+	"والا": Else,
+	"أدرج": Import,
+	"أرجع": Return,
 }
 
 const (
@@ -44,11 +46,11 @@ const (
 	// Slash token
 	Slash = "/"
 	// Comma ,
-	Comma = ","
+	Comma = "،"
 	// Dot .
 	Dot = "."
 	// Semicolon ;
-	Semicolon = ";"
+	Semicolon = "؛"
 	// Lparen is left parenthesis (
 	Lparen = "("
 	// Rparen is right parenthesis )
