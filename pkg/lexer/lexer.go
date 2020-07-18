@@ -164,12 +164,12 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[pos:l.pos]
 }
 
-var escapeCharacters = map[rune]byte{
-	'n':  '\n',
-	'r':  '\r',
-	'\\': '\\',
-	'"':  '"',
-	't':  '\t',
+var escapeCharacters = map[rune]string{
+	'n':  "\n",
+	'r':  "\r",
+	'\\': "\\",
+	'"':  `"`,
+	't':  "\t",
 }
 
 func (l *Lexer) readString() string {
@@ -179,7 +179,7 @@ func (l *Lexer) readString() string {
 		if l.ch == '\\' {
 			l.readChar()
 			if val, ok := escapeCharacters[l.ch]; ok {
-				str.WriteByte(val)
+				str.WriteString(val)
 			}
 		} else {
 			str.WriteRune(l.ch)
