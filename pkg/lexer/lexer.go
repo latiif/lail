@@ -18,7 +18,7 @@ type Lexer struct {
 	col     int  // current col
 }
 
-// New instantiates a new LExer
+// New instantiates a new Lexer
 func New(input string) *Lexer {
 	l := &Lexer{input: input, line: 1, col: 1}
 	l.readChar()
