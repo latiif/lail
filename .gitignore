@@ -1,2 +1,6 @@
 *.il
+*.report
+*.wasm
+bin/
 lail
+lib/
