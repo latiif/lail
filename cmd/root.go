@@ -5,29 +5,25 @@ import (
 	"path/filepath"
 
 	"github.com/latiif/lail/cmd/repl"
-	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "lail",
-	Short: "Interpreter for lail ",
-	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			repl.Start(os.Stdin, os.Stdout)
-		} else {
-			for _, file := range args {
-				fileHandle, err := os.Open(file)
-				if err != nil {
-					continue
-				}
-				repl.InterpretFile(filepath.Dir(file), fileHandle, os.Stdout, os.Stderr)
-				fileHandle.Close()
+func execute(args []string) error {
+	if len(args) == 0 {
+		repl.Start(os.Stdin, os.Stdout)
+	} else {
+		for _, file := range args {
+			fileHandle, err := os.Open(file)
+			if err != nil {
+				continue
 			}
+			repl.InterpretFile(filepath.Dir(file), fileHandle, os.Stdout, os.Stderr)
+			fileHandle.Close()
 		}
-	},
+	}
+	return nil
 }
 
 // Executes the program
 func Execute() error {
-	return rootCmd.Execute()
+	return execute(os.Args[1:])
 }
