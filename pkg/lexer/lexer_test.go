@@ -30,6 +30,8 @@ import "file"
 _this_is_1_valid_identifier.
 "this\nstring\thas\tescape\"characters\\"
 مت💜å
+// this line should be ignored
+// x = "this too"
 `
 	tests := []struct {
 		expectedType    token.Type

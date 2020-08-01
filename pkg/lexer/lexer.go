@@ -28,6 +28,7 @@ func New(input string) *Lexer {
 // NextToken returns next token for the Lexer's input
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
+Start:
 	l.skipWhiteSpace()
 	switch l.ch {
 	case '=':
@@ -65,7 +66,14 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newChToken(token.Bang, l.ch, l.line, l.col)
 		}
 	case '/':
-		tok = newChToken(token.Slash, l.ch, l.line, l.col)
+		if l.peekChar() == '/' {
+			l.readChar()
+			l.skipLine()
+			// No need to create a token because parser doesn't need to know about comments
+			goto Start
+		} else {
+			tok = newChToken(token.Slash, l.ch, l.line, l.col)
+		}
 	case '*':
 		tok = newChToken(token.Astersik, l.ch, l.line, l.col)
 	case '<':
@@ -192,6 +200,12 @@ func (l *Lexer) readString() string {
 
 func (l *Lexer) skipWhiteSpace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\r' || l.ch == '\n' {
+		l.readChar()
+	}
+}
+
+func (l *Lexer) skipLine() {
+	for l.ch != '\n' && l.ch != 0 {
 		l.readChar()
 	}
 }

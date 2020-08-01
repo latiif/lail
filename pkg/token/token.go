@@ -93,6 +93,8 @@ const (
 	String = "STRING"
 	// Import keyword
 	Import = "IMPORT"
+	// One line comment marker
+	Comment = "//"
 )
 
 // LookupIdent looks up a string in keywords
