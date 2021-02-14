@@ -28,5 +28,9 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		p.nextToken()
 	}
 
+	if functionLiteral, ok := stmt.Value.(*ast.FunctionLiteral); ok {
+		functionLiteral.Name = stmt.Name
+	}
+
 	return stmt
 }

@@ -325,7 +325,7 @@ func (p *Parser) parseArray() ast.Expression {
 }
 
 func (p *Parser) parseAssignmentExpression(left ast.Expression) ast.Expression {
-	_, ok := left.(*ast.Identifier)
+	id, ok := left.(*ast.Identifier)
 	if !ok {
 		p.errors = append(p.errors, fmt.Sprintf("Parsing error: At (%d:%d) Expected: %s Found: %s", p.currToken.Line, p.currToken.Col, "Identifier as left hand side", left.String()))
 	}
@@ -336,6 +336,10 @@ func (p *Parser) parseAssignmentExpression(left ast.Expression) ast.Expression {
 	}
 	p.nextToken()
 	expr.Right = p.parseExpression(Lowest)
+
+	if functionLiteral, ok := expr.Right.(*ast.FunctionLiteral); ok {
+		functionLiteral.Name = id
+	}
 
 	return expr
 }

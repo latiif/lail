@@ -187,6 +187,7 @@ func (bs *BlockStatement) String() string {
 
 // FunctionLiteral represents a function literal.
 type FunctionLiteral struct {
+	Name   *Identifier
 	Token  token.Token
 	Params []*Identifier
 	Body   *BlockStatement

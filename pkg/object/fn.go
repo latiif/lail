@@ -9,6 +9,7 @@ import (
 
 // Function represents a Function object
 type Function struct {
+	Name   *ast.Identifier
 	Params []*ast.Identifier
 	Body   *ast.BlockStatement
 	Env    *Env

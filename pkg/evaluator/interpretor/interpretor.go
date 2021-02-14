@@ -122,9 +122,11 @@ func Eval(node ast.Node, env *object.Env) object.Object {
 			Value: elements,
 		}
 	case *ast.FunctionLiteral:
+		name := node.Name
 		params := node.Params
 		body := node.Body
 		return &object.Function{
+			Name:   name,
 			Params: params,
 			Body:   body,
 			Env:    env,
@@ -292,7 +294,11 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	// check if it's a user defined function
 	if function, ok := fn.(*object.Function); ok {
 		if len(function.Params) != len(args) {
-			return newIllegalStateException(fmt.Sprintf("function call expected %d parameter(s); got %d argument(s)", len(function.Params), len(args)))
+			functionName := "Anonymous function"
+			if function.Name != nil && function.Name.Value != "" {
+				functionName = function.Name.Value
+			}
+			return newIllegalStateException(fmt.Sprintf("%s: function call expected %d parameter(s); got %d argument(s)", functionName, len(function.Params), len(args)))
 		}
 		fnExtendedEnv := extendFunctionEnv(function, args)
 		return unwrapReturnValue(Eval(function.Body, fnExtendedEnv))
