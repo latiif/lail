@@ -290,7 +290,19 @@ func evalExpressions(exprs []ast.Expression, e *object.Env) []object.Object {
 	}
 	return res
 }
+
+var depth = 0
+
+const maxDepth = 99999
+
 func applyFunction(fn object.Object, args []object.Object) object.Object {
+	depth++
+	defer func() {
+		depth--
+	}()
+	if depth > maxDepth {
+		panic(fmt.Sprintf("Too many nested calls : %d", depth))
+	}
 	// check if it's a user defined function
 	if function, ok := fn.(*object.Function); ok {
 		if len(function.Params) != len(args) {

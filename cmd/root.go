@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -8,6 +9,11 @@ import (
 )
 
 func execute(args []string) error {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Fatal issue detected:", r, "\nABORTED!")
+		}
+	}()
 	if len(args) == 0 {
 		repl.Start(os.Stdin, os.Stdout)
 	} else {
