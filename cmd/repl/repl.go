@@ -11,12 +11,13 @@ import (
 	"github.com/latiif/lail/pkg/parser"
 )
 
-// Prompt is the symbol printed at the beginning of every line
-const Prompt = "> "
+// prompt is the symbol printed at the beginning of every line
+const prompt = "> "
 
 // Start starts the interactive REPL
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
+	print(prompt)
 	env := object.NewEnv()
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -35,7 +36,7 @@ func Start(in io.Reader, out io.Writer) {
 			io.WriteString(out, interpreted.Inspect())
 			io.WriteString(out, "\n")
 		}
-
+		print(prompt)
 	}
 }
 
